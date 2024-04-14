@@ -19,7 +19,9 @@ import {
 import { Input } from '@/components/ui/input'
 import { SheetFooter } from '@/components/ui/sheet'
 import { toast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Loader } from 'lucide-react'
 import { Session } from 'next-auth'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -48,18 +50,20 @@ export function ProfileForm({ defaultValue }: ProfileFormProps) {
     form.reset({ name: '' })
 
     toast({
-      title: 'Success',
-      description: 'Your profile has been updated successfully',
+      title: 'Sucesso',
+      description: 'Seu perfil foi atualizado com sucesso.',
     })
   })
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="h-screen space-y-8">
+      <form onSubmit={onSubmit} className="space-y-8">
         <Card>
           <CardHeader>
-            <CardTitle>Name</CardTitle>
-            <CardDescription>Enter your name here</CardDescription>
+            <CardTitle>Nome</CardTitle>
+            <CardDescription>
+              Este será o nome exibido publicamente.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField
@@ -67,9 +71,9 @@ export function ProfileForm({ defaultValue }: ProfileFormProps) {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your name" {...field} />
+                    <Input placeholder="Digite seu nome" {...field} />
                   </FormControl>
 
                   <FormMessage />
@@ -82,7 +86,11 @@ export function ProfileForm({ defaultValue }: ProfileFormProps) {
         <Card>
           <CardHeader>
             <CardTitle>Email</CardTitle>
-            <CardDescription>Enter your email here</CardDescription>
+            <CardDescription>
+              {' '}
+              Entre em contato pelo email contact@micro-saas.com para alterar o
+              email.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <FormField
@@ -92,7 +100,7 @@ export function ProfileForm({ defaultValue }: ProfileFormProps) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email" readOnly {...field} />
+                    <Input placeholder="Digite seu email" readOnly {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -102,7 +110,17 @@ export function ProfileForm({ defaultValue }: ProfileFormProps) {
         </Card>
 
         <SheetFooter>
-          <Button type="submit">Save changes</Button>
+          <Button
+            disabled={form.formState.isLoading}
+            type="submit"
+            className={cn('w-32')}
+          >
+            {form.formState.isSubmitting ? (
+              <Loader className="animate-spin" />
+            ) : (
+              'Salvar alterações'
+            )}
+          </Button>
         </SheetFooter>
       </form>
     </Form>
